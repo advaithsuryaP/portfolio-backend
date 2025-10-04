@@ -12,15 +12,15 @@ export class EducationService {
     return `This action returns all education`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} education`;
   }
 
-  update(id: number, updateEducationDto: UpdateEducationDto) {
+  update(id: string, updateEducationDto: UpdateEducationDto) {
     return `This action updates a #${id} education`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} education`;
   }
 }
