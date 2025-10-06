@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ENV_CONSTANTS } from './common/constants/app.constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,6 +30,6 @@ async function bootstrap() {
   app.enableVersioning({ type: VersioningType.URI });
 
   const configService = app.get(ConfigService);
-  await app.listen(configService.get<number>('PORT') ?? 3000);
+  await app.listen(configService.get<number>(ENV_CONSTANTS.PORT)!);
 }
 bootstrap();

@@ -6,6 +6,7 @@ import { ExperienceModule } from './experience/experience.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { buildTypeOrmOptions } from './database/typeorm.config';
+import { ENV_CONSTANTS } from './common/constants/app.constants';
 
 @Module({
   imports: [
@@ -14,7 +15,9 @@ import { buildTypeOrmOptions } from './database/typeorm.config';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
-        buildTypeOrmOptions(configService.get<string>('DATABASE_URL')!),
+        buildTypeOrmOptions(
+          configService.get<string>(ENV_CONSTANTS.DATABASE_URL)!,
+        ),
     }),
 
     // Feature modules
