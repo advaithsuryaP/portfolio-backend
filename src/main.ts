@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ENV_CONSTANTS } from './common/constants/app.constants';
+import { LogInterceptor } from './common/interceptors/log/log.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,7 +25,7 @@ async function bootstrap() {
 
   // Global Filters (if any)
 
-  // Global Interceptors (if any)
+  app.useGlobalInterceptors(new LogInterceptor());
 
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });

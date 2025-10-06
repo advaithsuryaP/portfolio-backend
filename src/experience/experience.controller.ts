@@ -7,17 +7,20 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ExperienceService } from './experience.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { ResponseInterface } from 'src/common/interfaces/response.interface';
 import { Experience } from './entities/experience.entity';
+import { AdminGuard } from 'src/common/guards/admin/admin.guard';
 
 @Controller({ path: 'experience', version: '1' })
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 
+  @UseGuards(AdminGuard)
   @Post()
   async create(
     @Body() createExperienceDto: CreateExperienceDto,
