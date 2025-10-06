@@ -3,9 +3,24 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EducationModule } from './education/education.module';
 import { ExperienceModule } from './experience/experience.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { buildTypeOrmOptions } from './database/typeorm.config';
 
 @Module({
-  imports: [ExperienceModule, EducationModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        buildTypeOrmOptions(configService.get<string>('DATABASE_URL')!),
+    }),
+
+    // Feature modules
+    EducationModule,
+    ExperienceModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

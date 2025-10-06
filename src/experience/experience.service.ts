@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Experience } from './entities/experience.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExperienceService {
-  create(createExperienceDto: CreateExperienceDto) {
-    return 'This action adds a new experience';
+  constructor(
+    @InjectRepository(Experience)
+    private readonly experienceRepository: Repository<Experience>,
+  ) {}
+
+  async create(createExperienceDto: CreateExperienceDto): Promise<Experience> {
+    const experience = this.experienceRepository.create(createExperienceDto);
+    return await this.experienceRepository.save(experience);
   }
 
-  findAll() {
-    return `This action returns all experience`;
+  async findAll(): Promise<Experience[]> {
+    return await this.experienceRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} experience`;
+  async findOne(id: string): Promise<Experience> {
+    const experience = await this.experienceRepository.findOne({
+      where: { id },
+    });
+    if (!experience) {
+      throw new NotFoundException('Experience not found');
+    }
+    return experience;
   }
 
-  update(id: string, updateExperienceDto: UpdateExperienceDto) {
-    return `This action updates a #${id} experience`;
+  async update(
+    id: string,
+    updateExperienceDto: UpdateExperienceDto,
+  ): Promise<Experience> {
+    const experience = await this.experienceRepository.findOne({
+      where: { id },
+    });
+    if (!experience) {
+      throw new NotFoundException('Experience not found');
+    }
+    this.experienceRepository.merge(experience, updateExperienceDto);
+    return await this.experienceRepository.save(experience);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} experience`;
+  async remove(id: string): Promise<void> {
+    const experience = await this.experienceRepository.findOne({
+      where: { id },
+    });
+    if (!experience) {
+      throw new NotFoundException('Experience not found');
+    }
+    await this.experienceRepository.remove(experience);
   }
 }

@@ -6,40 +6,70 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ExperienceService } from './experience.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
+import { ResponseInterface } from 'src/common/interfaces/response.interface';
+import { Experience } from './entities/experience.entity';
 
-@Controller('experience')
+@Controller({ path: 'experience', version: '1' })
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 
   @Post()
-  create(@Body() createExperienceDto: CreateExperienceDto) {
-    return this.experienceService.create(createExperienceDto);
+  async create(
+    @Body() createExperienceDto: CreateExperienceDto,
+  ): Promise<ResponseInterface<Experience>> {
+    const experience = await this.experienceService.create(createExperienceDto);
+    return {
+      data: experience,
+      message: 'Experience created successfully',
+    };
   }
 
   @Get()
-  findAll() {
-    return this.experienceService.findAll();
+  async findAll(): Promise<ResponseInterface<Experience[]>> {
+    const experiences = await this.experienceService.findAll();
+    return {
+      data: experiences,
+      message: 'Experiences fetched successfully',
+    };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.experienceService.findOne(id);
+  async findOne(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<ResponseInterface<Experience>> {
+    const experience = await this.experienceService.findOne(id);
+    return {
+      data: experience,
+      message: 'Experience fetched successfully',
+    };
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateExperienceDto: UpdateExperienceDto,
-  ) {
-    return this.experienceService.update(id, updateExperienceDto);
+  ): Promise<ResponseInterface<Experience>> {
+    const experience = await this.experienceService.update(
+      id,
+      updateExperienceDto,
+    );
+    return {
+      data: experience,
+      message: 'Experience updated successfully',
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.experienceService.remove(id);
+  async remove(@Param('id') id: string): Promise<ResponseInterface<boolean>> {
+    await this.experienceService.remove(id);
+    return {
+      data: true,
+      message: 'Experience deleted successfully',
+    };
   }
 }

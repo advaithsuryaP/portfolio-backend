@@ -21,7 +21,7 @@ export class EducationController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.educationService.findAll();
   }
 
