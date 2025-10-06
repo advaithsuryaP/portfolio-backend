@@ -18,7 +18,11 @@ export class ExperienceService {
   }
 
   async findAll(): Promise<Experience[]> {
-    return await this.experienceRepository.find();
+    return await this.experienceRepository.find({
+      order: {
+        fromDate: 'DESC',
+      },
+    });
   }
 
   async findOne(id: string): Promise<Experience> {
